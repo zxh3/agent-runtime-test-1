@@ -2,6 +2,7 @@
 
 # Variables
 BINARY_NAME=agent-runtime
+BUILD_DIR=build
 GO=go
 GOFMT=gofmt
 GOLINT=golangci-lint
@@ -11,17 +12,19 @@ all: build
 
 # Build the application
 build:
+	mkdir -p $(BUILD_DIR)
 	$(GO) mod tidy
-	$(GO) build -o $(BINARY_NAME) ./cmd/agent_workshop_runtime
+	$(GO) build -o $(BUILD_DIR)/$(BINARY_NAME) ./cmd/agent_workshop_runtime
 
 # Build for AMD64 architecture
 build-amd64:
+	mkdir -p $(BUILD_DIR)
 	$(GO) mod tidy
-	GOOS=linux GOARCH=amd64 $(GO) build -o $(BINARY_NAME)-amd64 ./cmd/agent_workshop_runtime
+	GOOS=linux GOARCH=amd64 $(GO) build -o $(BUILD_DIR)/$(BINARY_NAME)-amd64 ./cmd/agent_workshop_runtime
 
 # Run the application
 run: build
-	./$(BINARY_NAME)
+	./$(BUILD_DIR)/$(BINARY_NAME)
 
 # Run the application with hot reload (requires air)
 dev:
@@ -46,8 +49,7 @@ lint:
 
 # Clean build artifacts
 clean:
-	rm -f $(BINARY_NAME)
-	rm -f $(BINARY_NAME)-amd64
+	rm -rf $(BUILD_DIR)
 	rm -f coverage.out
 
 # Install development dependencies
